@@ -25,7 +25,7 @@ public class InstagramStoriesShare extends SingleShareIntent {
     public void open(ReadableMap options) throws ActivityNotFoundException {
         super.open(options);
         //  extra params here
-        this.openIntentChooser();
+        //this.openIntentChooser();
     }
 
     @Override
