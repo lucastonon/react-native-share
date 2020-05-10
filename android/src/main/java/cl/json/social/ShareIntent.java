@@ -41,8 +41,8 @@ public abstract class ShareIntent {
 
     public ShareIntent(ReactApplicationContext reactContext) {
         this.reactContext = reactContext;
-        this.setIntent(new Intent(android.content.Intent.ACTION_SEND));
-        this.getIntent().setType("text/plain");
+        this.setIntent(new Intent("com.instagram.share.ADD_TO_STORY"));
+        this.getIntent().setType("image/jpeg");
     }
 
     public Intent excludeChooserIntent(Intent prototype, ReadableMap options) {
@@ -121,6 +121,22 @@ public abstract class ShareIntent {
             if (!whatsAppNumber.isEmpty()) {
                 String chatAddress = whatsAppNumber + "@s.whatsapp.net";
                 this.getIntent().putExtra("jid", chatAddress);
+            }
+        }
+        if (socialType.equals("instagramstories")) {
+            this.getIntent().setAction("com.instagram.share.ADD_TO_STORY");
+            String backgroundTopColor = options.getString("backgroundTopColor");
+            String backgroundBottomColor = options.getString("backgroundBottomColor");
+            String stickerImage = options.getString("stickerImage");
+
+            if (!backgroundTopColor.isEmpty()) {
+                this.getIntent().putExtra("top_background_color", backgroundTopColor);
+            }
+            if (!backgroundBottomColor.isEmpty()) {
+                this.getIntent().putExtra("bottom_background_color", backgroundBottomColor);
+            }
+            if (!stickerImage.isEmpty()) {
+                this.getIntent().putExtra("interactive_asset_uri", stickerImage);
             }
         }
 
