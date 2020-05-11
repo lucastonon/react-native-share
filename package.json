@@ -4,7 +4,7 @@
   "version": "3.3.2",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/react-native-community/react-native-share.git"
+    "url": "git+https://github.com/lucastonon/react-native-share.git"
   },
   "main": "index.js",
   "files": [
