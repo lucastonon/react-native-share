@@ -126,11 +126,10 @@ public abstract class ShareIntent {
 
         if (socialType.equals("instagramstories")) {
             this.getIntent().setAction("com.instagram.share.ADD_TO_STORY");
-            this.getIntent().setType("image/jpeg");
+            this.getIntent().setType("image/*");
             String backgroundTopColor = options.getString("backgroundTopColor");
             String backgroundBottomColor = options.getString("backgroundBottomColor");
             String stickerImage = options.getString("stickerImage");
-            this.getIntent().setDataAndType(stickerImage,  "image/*");
 
             if (!backgroundTopColor.isEmpty()) {
                 this.getIntent().putExtra("top_background_color", backgroundTopColor);
@@ -139,9 +138,29 @@ public abstract class ShareIntent {
                 this.getIntent().putExtra("bottom_background_color", backgroundBottomColor);
             }
             if (!stickerImage.isEmpty()) {
-                this.getIntent().putExtra("interactive_asset_uri", stickerImage);
+                ShareFile sf = new ShareFile(stickerImage, null, this.reactContext);
+                this.getIntent().putExtra("interactive_asset_uri", sf.getURI());
+                this.getIntent().setDataAndType(sf.getURI(),  "image/*");
+
+                Intent i = new Intent("com.instagram.share.ADD_TO_STORY");
+                i.setType("image/png");
+                i.setDataAndType(sf.getURI(), "image/png");
+                i.putExtra("top_background_color", backgroundTopColor);
+                i.putExtra("bottom_background_color", backgroundBottomColor);
+                //i.putExtra(Intent.EXTRA_STREAM, sf.getURI());
+                //i.putExtra("interactive_asset_uri", sf.getURI());
+                //i.putExtra("content_url", "http://memoriesapp.com.br");
+                i.setPackage("com.instagram.android");
+                i.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                Activity ac = this.reactContext.getCurrentActivity();
+                ac.grantUriPermission(
+                        "com.instagram.android", sf.getURI(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                if (ac.getPackageManager().resolveActivity(i, 0) != null) {
+                    ac.startActivityForResult(i, 0);
+                }
+                //this.reactContext.getCurrentActivity().startActivity(i);
             }
-            this.reactContext.getCurrentActivity().startActivity(this.getIntent());
+            //this.reactContext.getCurrentActivity().startActivity(this.getIntent());
 
         } else if (ShareIntent.hasValidKey("urls", options)) {
 
